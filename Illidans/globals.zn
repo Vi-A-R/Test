@@ -1,0 +1,27 @@
+library Globals {
+    //Публичный блок. В нём все переменные и функции доступны
+    public {
+        //Глобальные переменные
+        trigger UnitSpellEffect;
+        player Players[];
+
+        player MarshalPlayer;
+
+        //Временные переменные (для того, чтобы избегать создания локалок и фиксить утечки)
+        unit tUnit;
+        group tGroup;
+        player tPlayer;
+    }
+
+    function onInit() -> nothing {
+        integer index;
+        UnitSpellEffect = CreateTrigger();
+        for (0 <= index < bj_MAX_PLAYER_SLOTS) {
+            //Запихиваю плэеров в массив, чтобы не вызывать нативку
+            Players[index] = Player(index);
+
+            //Объявление глобальных событий
+            TriggerRegisterPlayerUnitEvent(UnitSpellEffect, Players[index], EVENT_PLAYER_UNIT_SPELL_EFFECT, null);
+        }
+    }
+}

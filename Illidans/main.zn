@@ -1,0 +1,10 @@
+//! import "globals.zn"
+//! import "actions\Zikkyrat.zn"
+
+library Main {
+
+    function onInit() -> nothing {
+        
+    }
+
+}
