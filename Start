@@ -1,3 +1,5 @@
+// New Comment
+
 function Trig_Start_Func001Func011002 takes nothing returns nothing
     call RemoveUnit( GetEnumUnit() )
 endfunction
