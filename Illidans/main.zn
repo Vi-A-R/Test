@@ -1,6 +1,9 @@
 //! import "globals.zn"
 //! import "actions\Zikkyrat.zn"
 
+
+//! import "Illidans\actions\Start.zn"
+
 library Main {
 
     function onInit() -> nothing {

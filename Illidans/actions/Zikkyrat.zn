@@ -1,65 +1,62 @@
-library ZikkyratAction requires Globals {
+group Zikkyrats;
+unit ZikkyratTarget;
+unit ZikkyratCreatedUnit;
 
-    group Zikkyrats;
-    unit ZikkyratTarget;
-    unit ZikkyratCreatedUnit;
+function ZikkyratCheckTarget(unit whichUnit) -> boolean {
+    if (IsUnitType(whichUnit, UNIT_TYPE_STRUCTURE))
+        return false;
+    if (GetUnitTypeId(whichUnit) == 'hbot')
+        return false;
+    if (IsUnitType(whichUnit, UNIT_TYPE_HERO))
+        return false;
+    if (IsUnitType(whichUnit, UNIT_TYPE_MECHANICAL))
+        return false;
+    if (IsUnitType(whichUnit, UNIT_TYPE_SUMMONED))
+        return false;
+    if (IsUnitType(whichUnit, UNIT_TYPE_PEON))
+        return false;
+    if (GetUnitAbilityLevel(whichUnit, 'A01Z') != 0)
+        return false;
+    if (GetUnitAbilityLevel(whichUnit, 'A01I') != 0)
+        return false;
+    if (GetUnitState(whichUnit, UNIT_STATE_LIFE) <= 0)
+        return false;
+    if (!IsUnitEnemy(whichUnit, MarshalPlayer))
+        return false;
+    return true;
+}
 
-    function ZikkyratCheckTarget(unit whichUnit) -> boolean {
-        if (IsUnitType(whichUnit, UNIT_TYPE_STRUCTURE))
-            return false;
-        if (GetUnitTypeId(whichUnit) == 'hbot')
-            return false;
-        if (IsUnitType(whichUnit, UNIT_TYPE_HERO))
-            return false;
-        if (IsUnitType(whichUnit, UNIT_TYPE_MECHANICAL))
-            return false;
-        if (IsUnitType(whichUnit, UNIT_TYPE_SUMMONED))
-            return false;
-        if (IsUnitType(whichUnit, UNIT_TYPE_PEON))
-            return false;
-        if (GetUnitAbilityLevel(whichUnit, 'A01Z') != 0)
-            return false;
-        if (GetUnitAbilityLevel(whichUnit, 'A01I') != 0)
-            return false;
-        if (GetUnitState(whichUnit, UNIT_STATE_LIFE) <= 0)
-            return false;
-        if (!IsUnitEnemy(whichUnit, MarshalPlayer))
-            return false;
-        return true;
-    }
+function ZikkyratFilterGroup() -> nothing {
+    tUnit = GetEnumUnit();
+    if (ZikkyratCheckTarget(tUnit))
+        GroupRemoveUnit(tGroup, tUnit);
+}
 
-    function ZikkyratFilterGroup() -> nothing {
-        tUnit = GetEnumUnit();
-        if (ZikkyratCheckTarget(tUnit))
-            GroupRemoveUnit(tGroup, tUnit);
-    }
+function OnZikkyratSpellEffect() -> nothing {
+    tUnit = GetTriggerUnit();
+    //оператор "!" равносилен not
+    if(GetUnitTypeId(tUnit) != 'uzig')
+        return; //Прекращаем выполнение действия, если тип юнита не 'uzig'
 
-    function OnZikkyratSpellEffect() -> nothing {
-        tUnit = GetTriggerUnit();
-        //оператор "!" равносилен not
-        if(GetUnitTypeId(tUnit) != 'uzig')
-            return; //Прекращаем выполнение действия, если тип юнита не 'uzig'
+    tGroup = CreateGroup();
+    GroupEnumUnitsInRect(tGroup, bj_mapInitialPlayableArea, null);
+    ForGroup(tGroup, function ZikkyratFilterGroup);
+    ZikkyratTarget = GroupPickRandomUnit(tGroup);
 
-        tGroup = CreateGroup();
-        GroupEnumUnitsInRect(tGroup, bj_mapInitialPlayableArea, null);
-        ForGroup(tGroup, function ZikkyratFilterGroup);
-        ZikkyratTarget = GroupPickRandomUnit(tGroup);
+    UnitDamageTarget(tUnit, ZikkyratTarget, 1500.00, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, null);
+    ZikkyratCreatedUnit = CreateUnit(MarshalPlayer, GetUnitTypeId(ZikkyratTarget),
+                                    GetUnitX(ZikkyratTarget),
+                                    GetUnitY(ZikkyratTarget),
+                                    GetUnitFacing(ZikkyratTarget));
+    UnitAddType(ZikkyratCreatedUnit, UNIT_TYPE_SUMMONED);
+    SetUnitVertexColor(ZikkyratCreatedUnit, 0, 0, 0, PercentTo255(50.00));
+    UnitAddAbility(ZikkyratCreatedUnit, 'ACrn');
 
-        UnitDamageTarget(tUnit, ZikkyratTarget, 1500.00, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, null);
-        ZikkyratCreatedUnit = CreateUnit(MarshalPlayer, GetUnitTypeId(ZikkyratTarget),
-                                        GetUnitX(ZikkyratTarget),
-                                        GetUnitY(ZikkyratTarget),
-                                        GetUnitFacing(ZikkyratTarget));
-        UnitAddType(ZikkyratCreatedUnit, UNIT_TYPE_SUMMONED);
-        SetUnitVertexColor(ZikkyratCreatedUnit, 0, 0, 0, PercentTo255(50.00));
-        UnitAddAbility(ZikkyratCreatedUnit, 'ACrn');
+    RemoveUnit(ZikkyratTarget);
+    DestroyGroup(tGroup);
+}
 
-        RemoveUnit(ZikkyratTarget);
-        DestroyGroup(tGroup);
-    }
-
-    //Вызываешь это, когда пикается нужная фракция
-    function OnUndeadPicked() -> nothing {
-        TriggerAddAction(UnitSpellEffect, function OnZikkyratSpellEffect);
-    }
+//Вызываешь это, когда пикается нужная фракция
+function OnUndeadPicked() -> nothing {
+    TriggerAddAction(UnitSpellEffect, function OnZikkyratSpellEffect);
 }

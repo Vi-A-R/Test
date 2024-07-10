@@ -2,20 +2,97 @@ library Globals {
     //Публичный блок. В нём все переменные и функции доступны
     public {
         //Глобальные переменные
+
+        region MapRegion;
+
         trigger UnitSpellEffect;
+        trigger UnitEnterMap;
+
         player Players[];
 
         player MarshalPlayer;
 
         //Временные переменные (для того, чтобы избегать создания локалок и фиксить утечки)
-        unit tUnit;
-        group tGroup;
-        player tPlayer;
+        unit rUnit;
+        group rGroup;
+        player rPlayer;
+
+        group tempGroup;
+        location tempLoc;
     }
+
+    //============================================================================
+    // Additional functions
+
+    function CreateNUnits( player whichPlayer, integer unitId, integer count, real x, real y, real face ) -> nothing
+    {
+        integer index;
+        for (0 <= index < count)
+        {
+            CreateUnit( whichPlayer, unitid, x, y, face );
+        }
+    }
+
+    function GroupUnitsSetOwner( group whichGroup, player newOwner ) -> nothing
+    {
+        group g = CreateGroup( );
+        unit u;
+        GroupAddGroup(whichGroup, g);
+
+        u = FirstOfGroup( g );
+        while( u != null)
+        {
+            SetUnitOwner( u, newOwner, true);
+            GroupRemoveUnit( g, u );
+            u = FirstOfGroup( g );
+        }
+        
+        DestroyGroup( g );
+        g = null;
+    }
+
+    function GetUnitsOnMapOfPlayer( player whichPlayer ) -> group
+    {
+        unit u;
+        rGroup = CreateGroup( );
+
+        GroupClear( tempGroup );
+
+        GroupEnumUnitsInRect( tempGroup, r, null );
+
+        u = FirstOfGroup( tempGroup );
+        while( u != null )
+        {
+            if( GetOwningPlayer( u ) != whichPlayer )
+            {
+                GroupAddUnit( rGroup, u );
+            }
+            GroupRemoveUnit( tempGroup, u );
+            u = FirstOfGroup( tempGroup );
+        }
+
+        return rGroup;
+    }
+
+    function DisplayTimedTextToPlayers( string message ) -> nothing
+    {
+        integer index;
+        for ( 0 <= index < bj_MAX_PLAYERS )
+        {
+            DisplayTextToPlayer( Player(index), 0, 0, message );
+        }
+    }
+
+    //============================================================================
+    // Initialization
 
     function onInit() -> nothing {
         integer index;
         UnitSpellEffect = CreateTrigger();
+
+        tempGroup = CreateGroup();
+        tempLoc = Location( 0, 0 );
+
         for (0 <= index < bj_MAX_PLAYER_SLOTS) {
             //Запихиваю плэеров в массив, чтобы не вызывать нативку
             Players[index] = Player(index);
@@ -23,5 +100,10 @@ library Globals {
             //Объявление глобальных событий
             TriggerRegisterPlayerUnitEvent(UnitSpellEffect, Players[index], EVENT_PLAYER_UNIT_SPELL_EFFECT, null);
         }
+
+        MapRegion = CreateRegion();
+        RegionAddRect(MapRegion, bj_mapInitialPlayableArea);
+
+        TriggerRegisterEnterRegion(UnitEnterMap, MapRegion, null);
     }
 }

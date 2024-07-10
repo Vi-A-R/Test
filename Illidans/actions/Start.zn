@@ -1,0 +1,231 @@
+function RemoveUnitCB( ) -> nothing
+{
+    RemoveUnit( GetEnumUnit() );
+}
+
+function Trig_Start_Func002Func013002( ) -> nothing
+{
+    unit enumUnit = GetEnumUnit();
+    if( IsUnitType( enumUnit, UNIT_TYPE_STRUCTURE) )
+    {
+        SetUnitOwner( enumUnit, udg_MarshalPlayer, true );
+    }
+    enumUnit = null;
+}
+
+function Trig_Start_Func003Func008002( ) -> nothing 
+{
+    SetPlayerTechResearchedSwap( 'Recb', 1, GetEnumPlayer() );
+}
+
+function Trig_Start_Actions( ) -> nothing
+{
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e00B' )
+    {
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_iIlidanPlayer = GetOwningPlayer(GetTriggerUnit());
+
+        SetPlayerTechMaxAllowed(udg_iIlidanPlayer, 'n005', 1 );
+        SetPlayerTechMaxAllowed(udg_iIlidanPlayer, 'ntt1', 4 );
+        SetPlayerTechMaxAllowed(udg_iIlidanPlayer, 'n00U', 3 );
+        
+        SetPlayerAllianceStateBJ( udg_iIlidanPlayer, Player(9), bj_ALLIANCE_ALLIED_VISION );
+        SetPlayerAllianceStateBJ( Player(9), udg_iIlidanPlayer, bj_ALLIANCE_ALLIED_VISION );
+
+        DisplayTimedTextToPlayers( GetPlayerName(udg_iIlidanPlayer) + ": Выбрал Иллидана" );
+        SetPlayerName( udg_iIlidanPlayer, ( GetPlayerName(udg_iIlidanPlayer) + " (Иллидан)" ) );
+
+        ForceRemovePlayer( udg_PickPlayers, GetOwningPlayer( GetTriggerUnit( ) ) );
+        ForceAddPlayer( udg_PlayPlayers, udg_iIlidanPlayer );
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_iIlidanPlayer ), function RemoveUnitCB );
+
+        GroupClear( tempGroup );
+        GroupEnumUnitsInRect( tempGroup, gg_rct_Nagi_arma, null );
+        GroupUnitsSetOwner( tempGroup, udg_iIlidanPlayer );
+
+        SetUnitOwner( gg_unit_nntt_0009, udg_iIlidanPlayer, true );
+
+        udg_iIlidan = CreateUnit( udg_iIlidanPlayer, 'E002', GetRectCenterX( gg_rct_Nagi_arma ), GetRectCenterY( gg_rct_Nagi_arma ), bj_UNIT_FACING );
+        UnitAddItemById( udg_iIlidan, 'ckng' );
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_nntt_0094 ), GetUnitY( gg_unit_nntt_0094 ) );
+        PanCameraToTimedLocForPlayer( udg_iIlidanPlayer, tempLoc, 0 );
+    }
+
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e001' ) 
+    {
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_MarshalPlayer = GetOwningPlayer(GetTriggerUnit());
+        udg_NameAlik = GetPlayerName( udg_MarshalPlayer );
+
+        SetPlayerTechMaxAllowed(udg_MarshalPlayer, 'h001', 1 );
+        SetPlayerTechMaxAllowed(udg_MarshalPlayer, 'h00T', 5 );
+
+        SetPlayerAllianceStateBJ( udg_MarshalPlayer, Player(8), bj_ALLIANCE_ALLIED_VISION );
+        SetPlayerAllianceStateBJ( Player(8), udg_MarshalPlayer, bj_ALLIANCE_ALLIED_VISION );
+
+        DisplayTimedTextToPlayers( udg_NameAlik + " играет за людей" );
+        SetPlayerName( udg_MarshalPlayer, udg_NameAlik + " (Люди)" );
+        
+        ForceRemovePlayer(udg_PickPlayers, udg_MarshalPlayer);
+        ForceAddPlayer(udg_PlayPlayers, udg_MarshalPlayer);
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_MarshalPlayer ), function RemoveUnitCB );
+
+        ForGroup( GetUnitsOnMapOfPlayer( Player(8) ), function Trig_Start_Func002Func013002 );
+
+        GroupClear( tempGroup );
+        GroupEnumUnitsInRect( tempGroup, gg_rct_DopBaza, null );
+        GroupUnitsSetOwner( tempGroup, udg_MarshalPlayer );
+
+        SelectUnitForPlayerSingle( gg_unit_halt_0454, udg_MarshalPlayer );
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_htow_0453 ), GetUnitY( gg_unit_htow_0453 ) );
+        PanCameraToTimedLocForPlayer( udg_MarshalPlayer, tempLoc, 0 );
+    }
+
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e00A' )
+    {        
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_MevPlayer = GetOwningPlayer(GetTriggerUnit());
+
+        SetPlayerTechMaxAllowed(udg_MevPlayer, 'ensh', 1 );
+        SetPlayerTechMaxAllowed(udg_MevPlayer, 'e005', 1 );
+        SetPlayerTechMaxAllowed(udg_MevPlayer, 'ewsp', 15 );
+
+        DisplayTimedTextToPlayers( GetPlayerName( udg_MevPlayer ) + " играет за Мэв" );
+        SetPlayerName( udg_MevPlayer, GetPlayerName( udg_MevPlayer ) + " (Мэв)" );
+
+        ForForce( bj_FORCE_ALL_PLAYERS, function Trig_Start_Func003Func008002 );
+        ForceRemovePlayer(udg_PickPlayers, udg_MevPlayer);
+        ForceAddPlayer(udg_PlayPlayers, udg_MevPlayer);
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_MevPlayer ), function RemoveUnitCB );
+
+        GroupClear( tempGroup );
+        GroupEnumUnitsInRect( tempGroup, gg_rct_NightElf, null );
+        GroupEnumUnitsInRect( tempGroup, gg_rct_NightElf2, null );
+        GroupUnitsSetOwner( tempGroup, udg_MevPlayer );
+
+        udg_Mev = CreateUnit( udg_MevPlayer, 'E004', GetRectCenterX( gg_rct_Drevo ), GetRectCenterY( gg_rct_Drevo ), bj_UNIT_FACING );
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_etoe_0735 ), GetUnitY( gg_unit_etoe_0735 ) );
+        PanCameraToTimedLocForPlayer( udg_MevPlayer, tempLoc, 0 );
+    }
+
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e003' )
+    {
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_KelPlayer = GetOwningPlayer(GetTriggerUnit());
+
+        SetPlayerTechMaxAllowed(udg_KelPlayer, 'hbew', 1 );
+        SetPlayerTechMaxAllowed(udg_KelPlayer, 'h00Q', 4 );
+
+        DisplayTimedTextToPlayers( GetPlayerName( udg_KelPlayer ) + " играет за Высших эльфов" );
+        SetPlayerName( udg_KelPlayer, GetPlayerName( udg_KelPlayer ) + " (Высшие эльфы)" );
+        
+        ForceRemovePlayer( udg_PickPlayers, udg_KelPlayer );
+        ForceAddPlayer(udg_PlayPlayers, udg_KelPlayer);
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_KelPlayer ), function RemoveUnitCB );
+
+        GroupClear( tempGroup );
+        GroupEnumUnitsInRect( tempGroup, gg_rct_Keli, null );
+        GroupUnitsSetOwner( tempGroup, udg_KelPlayer );
+
+        CreateNUnits( udg_KelPlayer, 'nhef', 5, GetRectCenterX( gg_rct_Kel_resp ), GetRectCenterY( gg_rct_Kel_resp ), bj_UNIT_FACING );
+
+        udg_Kel = CreateUnit( udg_KelPlayer, 'Hkal', GetRectCenterX( gg_rct_Kel_resp ), GetRectCenterY( gg_rct_Kel_resp ), bj_UNIT_FACING );
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_h003_0419 ), GetUnitY( gg_unit_h003_0419 ) );
+        PanCameraToTimedLocForPlayer( udg_KelPlayer, tempLoc, 0 );
+    }
+
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e00D' )
+    {
+        udg_DemonPlayer = GetOwningPlayer(GetTriggerUnit());
+
+        SetPlayerTechMaxAllowed(udg_DemonPlayer, 'ntt1', 4 );
+
+        ShowUnit( GetTriggerUnit(), false );
+
+        DisplayTimedTextToPlayers( GetPlayerName( udg_DemonPlayer ) + " играет за Вторженцов" );
+        SetPlayerName( udg_DemonPlayer, GetPlayerName(udg_DemonPlayer) + " (Вторженцы)" );
+
+        ForceRemovePlayer(udg_PickPlayers, udg_DemonPlayer);
+        ForceAddPlayer(udg_PlayPlayers, udg_DemonPlayer);
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_DemonPlayer ), function RemoveUnitCB );
+
+        SetUnitOwner( gg_unit_ncp3_0317, udg_DemonPlayer, true );
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_ncp3_0317 ), GetUnitY( gg_unit_ncp3_0317 ) );
+        PanCameraToTimedLocForPlayer( udg_DemonPlayer, tempLoc, 0 );
+    }
+
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e00T' )
+    {
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_SatyrPlayer = GetOwningPlayer(GetTriggerUnit());
+
+        SetPlayerTechMaxAllowed(udg_SatyrPlayer, 'n010', 3 );
+        SetPlayerTechMaxAllowed(udg_SatyrPlayer, 'n017', 20 );
+
+        DisplayTimedTextToPlayers( GetPlayerName( udg_SatyrPlayer ) + " играет за Сатиров" );
+        SetPlayerName( udg_SatyrPlayer, GetPlayerName( udg_SatyrPlayer ) + " (Сатиры)" );
+        
+        ForceRemovePlayer( udg_PickPlayers, udg_SatyrPlayer );
+        ForceAddPlayer(udg_PlayPlayers, udg_SatyrPlayer);
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_SatyrPlayer ), function RemoveUnitCB );
+
+        GroupClear( tempGroup );
+        GroupEnumUnitsInRect( tempGroup, gg_rct_SatyrStart, null );
+        GroupUnitsSetOwner( tempGroup, udg_SatyrPlayer );
+
+        udg_SatyrHero = gg_unit_U000_1860;
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_e00H_1859 ), GetUnitY( gg_unit_e00H_1859 ) );
+        PanCameraToTimedLocForPlayer( udg_SatyrPlayer, GetUnitLoc(gg_unit_e00H_1859), 0 );
+    }
+
+    if ( GetUnitTypeId(GetTriggerUnit()) == 'e00R' )
+    {
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_DiciyPlayer = GetOwningPlayer(GetTriggerUnit());
+
+        ForceRemovePlayer(udg_PickPlayers, udg_DiciyPlayer);
+        ForceAddPlayer(udg_PlayPlayers, udg_DiciyPlayer);
+
+        DisplayTimedTextToPlayers( GetPlayerName( udg_DiciyPlayer ) + ": Выбрал Дополнительные рассы" );
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_DiciyPlayer ), function RemoveUnitCB );
+
+        SetUnitOwner( gg_unit_n01B_1300, udg_DiciyPlayer, true );
+        SelectUnitForPlayerSingle( gg_unit_n01B_1300, udg_DiciyPlayer );
+
+        MoveLocation( tempLoc, GetUnitX( gg_unit_n01B_1300 ), GetUnitY( gg_unit_n01B_1300 ) );
+        PanCameraToTimedLocForPlayer( udg_DiciyPlayer, tempLoc, 0 );
+    }
+
+    if (  GetUnitTypeId(GetTriggerUnit()) == 'e00P'  )
+    {
+        ShowUnit( GetTriggerUnit(), false );
+
+        udg_KorolGorPlayer = GetOwningPlayer( GetTriggerUnit( ) );
+
+        ForceRemovePlayer( udg_PickPlayers, GetOwningPlayer( GetTriggerUnit( ) ) );
+        ForceAddPlayer( udg_PlayPlayers, udg_KorolGorPlayer );
+
+        ForGroup( GetUnitsOnMapOfPlayer( udg_KorolGorPlayer ), function RemoveUnitCB );
+
+        ConditionalTriggerExecute( gg_trg_Pick_Gnom );
+    }
+}

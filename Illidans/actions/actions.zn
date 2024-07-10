@@ -1,0 +1,8 @@
+library MapActions requires Globals
+{
+
+    //! import "Illidans\actions\Zikkyrat.zn"
+    
+    //! import "Illidans\actions\Start.zn"
+    
+}
