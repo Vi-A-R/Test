@@ -1,258 +1,229 @@
-function Trig_Start_Func001Func011002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+scope StartAct initializer onInit
 
-function Trig_Start_Func001Func013002 takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_iIlidanPlayer, true )
-endfunction
+    private function RemoveUnitCB takes nothing returns nothing
+        call RemoveUnit( GetEnumUnit() )
+    endfunction
 
-function Trig_Start_Func001C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e00B' ) ) then
-        return false
-    endif
-    return true
-endfunction
+    private function Trig_Start_Func002Func013002 takes nothing returns nothing
+        local unit enumUnit = GetEnumUnit()
+        if( IsUnitType( enumUnit, UNIT_TYPE_STRUCTURE) ) then
+            call SetUnitOwner( enumUnit, udg_MarshalPlayer, true )
+        endif
+        set enumUnit = null
+    endfunction
 
-function Trig_Start_Func002Func011002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+    private function Trig_Start_Func003Func008002 takes nothing returns nothing
+        call SetPlayerTechResearchedSwap( 'Recb', 1, GetEnumPlayer() )
+    endfunction
 
-function Trig_Start_Func002Func013001002 takes nothing returns boolean
-    return ( IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE) == true )
-endfunction
+    private function Trig_Start_Actions takes nothing returns nothing
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e00B' ) then
+            call ShowUnit( GetTriggerUnit(), false )
 
-function Trig_Start_Func002Func013002 takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_MarshalPlayer, true )
-endfunction
+            set udg_iIlidanPlayer = GetOwningPlayer(GetTriggerUnit())
 
-function Trig_Start_Func002Func014002 takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_MarshalPlayer, true )
-endfunction
+            call SetPlayerTechMaxAllowed(udg_iIlidanPlayer, 'n005', 1 )
+            call SetPlayerTechMaxAllowed(udg_iIlidanPlayer, 'ntt1', 4 )
+            call SetPlayerTechMaxAllowed(udg_iIlidanPlayer, 'n00U', 3 )
+            
+            call SetPlayerAllianceStateBJ( udg_iIlidanPlayer, Player(9), bj_ALLIANCE_ALLIED_VISION )
+            call SetPlayerAllianceStateBJ( Player(9), udg_iIlidanPlayer, bj_ALLIANCE_ALLIED_VISION )
 
-function Trig_Start_Func002C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e001' ) ) then
-        return false
-    endif
-    return true
-endfunction
+            call DisplayTimedTextToPlayers( GetPlayerName(udg_iIlidanPlayer) + ": Выбрал Иллидана" )
+            call SetPlayerName( udg_iIlidanPlayer, ( GetPlayerName(udg_iIlidanPlayer) + " (Иллидан)" ) )
 
-function Trig_Start_Func003Func008002 takes nothing returns nothing
-    call SetPlayerTechResearchedSwap( 'Recb', 1, GetEnumPlayer() )
-endfunction
+            call ForceRemovePlayer( udg_PickPlayers, GetOwningPlayer( GetTriggerUnit( ) ) )
+            call ForceAddPlayer( udg_PlayPlayers, udg_iIlidanPlayer )
 
-function Trig_Start_Func003Func010002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_iIlidanPlayer ), function RemoveUnitCB )
 
-function Trig_Start_Func003Func011002 takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_MevPlayer, true )
-endfunction
+            call GroupClear( tempGroup )
+            call GroupEnumUnitsInRect( tempGroup, gg_rct_Nagi_arma, null )
+            call GroupUnitsSetOwner( tempGroup, udg_iIlidanPlayer )
 
-function Trig_Start_Func003Func012002 takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_MevPlayer, true )
-endfunction
+            call SetUnitOwner( gg_unit_nntt_0009, udg_iIlidanPlayer, true )
 
-function Trig_Start_Func003C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e00A' ) ) then
-        return false
-    endif
-    return true
-endfunction
+            set udg_iIlidan = CreateUnit( udg_iIlidanPlayer, 'E002', GetRectCenterX( gg_rct_Nagi_arma ), GetRectCenterY( gg_rct_Nagi_arma ), bj_UNIT_FACING )
+            call UnitAddItemById( udg_iIlidan, 'ckng' )
 
-function Trig_Start_Func004Func009002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_nntt_0094 ), GetUnitY( gg_unit_nntt_0094 ) )
+            call PanCameraToTimedLocForPlayer( udg_iIlidanPlayer, tempLoc, 0 )
+        endif
 
-function Trig_Start_Func004Func010A takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_KelPlayer, true )
-endfunction
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e001' ) then
+            call ShowUnit( GetTriggerUnit(), false )
 
-function Trig_Start_Func004C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e003' ) ) then
-        return false
-    endif
-    return true
-endfunction
+            set udg_MarshalPlayer = GetOwningPlayer(GetTriggerUnit())
+            set udg_NameAlik = GetPlayerName( udg_MarshalPlayer )
 
-function Trig_Start_Func005Func007002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+            call SetPlayerTechMaxAllowed(udg_MarshalPlayer, 'h001', 1 )
+            call SetPlayerTechMaxAllowed(udg_MarshalPlayer, 'h00T', 5 )
 
-function Trig_Start_Func005C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e00D' ) ) then
-        return false
-    endif
-    return true
-endfunction
+            call SetPlayerAllianceStateBJ( udg_MarshalPlayer, Player(8), bj_ALLIANCE_ALLIED_VISION )
+            call SetPlayerAllianceStateBJ( Player(8), udg_MarshalPlayer, bj_ALLIANCE_ALLIED_VISION )
 
-function Trig_Start_Func006Func008002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+            call DisplayTimedTextToPlayers( udg_NameAlik + " играет за людей" )
+            call SetPlayerName( udg_MarshalPlayer, udg_NameAlik + " (Люди)" )
+            
+            call ForceRemovePlayer(udg_PickPlayers, udg_MarshalPlayer)
+            call ForceAddPlayer(udg_PlayPlayers, udg_MarshalPlayer)
 
-function Trig_Start_Func006Func010A takes nothing returns nothing
-    call SetUnitOwner( GetEnumUnit(), udg_SatyrPlayer, true )
-endfunction
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_MarshalPlayer ), function RemoveUnitCB )
 
-function Trig_Start_Func006C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e00T' ) ) then
-        return false
-    endif
-    return true
-endfunction
+            call ForGroup( GetUnitsOnMapOfPlayer( Player(8) ), function Trig_Start_Func002Func013002 )
 
-function Trig_Start_Func007Func005002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+            call GroupClear( tempGroup )
+            call GroupEnumUnitsInRect( tempGroup, gg_rct_DopBaza, null )
+            call GroupUnitsSetOwner( tempGroup, udg_MarshalPlayer )
 
-function Trig_Start_Func007C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e00R' ) ) then
-        return false
-    endif
-    return true
-endfunction
+            call SelectUnitForPlayerSingle( gg_unit_halt_0454, udg_MarshalPlayer )
 
-function Trig_Start_Func008Func004002 takes nothing returns nothing
-    call RemoveUnit( GetEnumUnit() )
-endfunction
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_htow_0453 ), GetUnitY( gg_unit_htow_0453 ) )
+            call PanCameraToTimedLocForPlayer( udg_MarshalPlayer, tempLoc, 0 )
+        endif
 
-function Trig_Start_Func008C takes nothing returns boolean
-    if ( not ( GetUnitTypeId(GetTriggerUnit()) == 'e00P' ) ) then
-        return false
-    endif
-    return true
-endfunction
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e00A' ) then
+            call ShowUnit( GetTriggerUnit(), false )
 
-function Trig_Start_Actions takes nothing returns nothing
-    if ( Trig_Start_Func001C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        call SetPlayerTechMaxAllowedSwap( 'n005', 1, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'ntt1', 4, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'n00U', 3, GetOwningPlayer(GetTriggerUnit()) )
-        set udg_iIlidanPlayer = GetOwningPlayer(GetTriggerUnit())
-        call SetPlayerAllianceStateBJ( udg_iIlidanPlayer, Player(9), bj_ALLIANCE_ALLIED_VISION )
-        call SetPlayerAllianceStateBJ( Player(9), udg_iIlidanPlayer, bj_ALLIANCE_ALLIED_VISION )
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + ": Выбрал Иллидана" ) )
-        call SetPlayerName( udg_iIlidanPlayer, ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " (Иллидан)" ) )
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_iIlidanPlayer), function Trig_Start_Func001Func011002 )
-        call ForceAddPlayerSimple( udg_iIlidanPlayer, udg_PlayPlayers )
-        call ForGroupBJ( GetUnitsInRectAll(gg_rct_Nagi_arma), function Trig_Start_Func001Func013002 )
-        call SetUnitOwner( gg_unit_nntt_0009, udg_iIlidanPlayer, true )
-        call PanCameraToTimedLocForPlayer( udg_iIlidanPlayer, GetUnitLoc(gg_unit_nntt_0094), 0 )
-        call CreateNUnitsAtLoc( 1, 'E002', udg_iIlidanPlayer, GetRectCenter(gg_rct_Nagi_arma), bj_UNIT_FACING )
-        call UnitAddItemByIdSwapped( 'ckng', GetLastCreatedUnit() )
-        set udg_iIlidan = GetLastCreatedUnit()
-    else
-    endif
-    if ( Trig_Start_Func002C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        call SetPlayerTechMaxAllowedSwap( 'h001', 1, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'h00T', 5, GetOwningPlayer(GetTriggerUnit()) )
-        set udg_MarshalPlayer = GetOwningPlayer(GetTriggerUnit())
-        set udg_NameAlik = GetPlayerName(GetOwningPlayer(GetTriggerUnit()))
-        call SetPlayerAllianceStateBJ( udg_MarshalPlayer, Player(8), bj_ALLIANCE_ALLIED_VISION )
-        call SetPlayerAllianceStateBJ( Player(8), udg_MarshalPlayer, bj_ALLIANCE_ALLIED_VISION )
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " играет за людей" ) )
-        call SetPlayerName( GetOwningPlayer(GetTriggerUnit()), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " (Люди)" ) )
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_MarshalPlayer), function Trig_Start_Func002Func011002 )
-        call ForceAddPlayerSimple( udg_MarshalPlayer, udg_PlayPlayers )
-        call ForGroupBJ( GetUnitsOfPlayerMatching(Player(8), Condition(function Trig_Start_Func002Func013001002)), function Trig_Start_Func002Func013002 )
-        call ForGroupBJ( GetUnitsInRectAll(gg_rct_DopBaza), function Trig_Start_Func002Func014002 )
-        call SelectUnitForPlayerSingle( gg_unit_halt_0454, udg_MarshalPlayer )
-        call PanCameraToTimedLocForPlayer( udg_MarshalPlayer, GetUnitLoc(gg_unit_htow_0453), 0 )
-    else
-    endif
-    if ( Trig_Start_Func003C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        call SetPlayerTechMaxAllowedSwap( 'ensh', 1, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'e005', 1, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'ewsp', 15, GetOwningPlayer(GetTriggerUnit()) )
-        set udg_MevPlayer = GetOwningPlayer(GetTriggerUnit())
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " играет за Мэв" ) )
-        call SetPlayerName( GetOwningPlayer(GetTriggerUnit()), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " (Мэв)" ) )
-        call ForForce( GetPlayersAll(), function Trig_Start_Func003Func008002 )
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_MevPlayer), function Trig_Start_Func003Func010002 )
-        call ForGroupBJ( GetUnitsInRectAll(gg_rct_NightElf), function Trig_Start_Func003Func011002 )
-        call ForGroupBJ( GetUnitsInRectAll(gg_rct_NightElf2), function Trig_Start_Func003Func012002 )
-        call CreateNUnitsAtLoc( 1, 'E004', udg_MevPlayer, GetRectCenter(gg_rct_Drevo), bj_UNIT_FACING )
-        set udg_Mev = GetLastCreatedUnit()
-        call PanCameraToTimedLocForPlayer( udg_MevPlayer, GetUnitLoc(gg_unit_etoe_0735), 0 )
-        call ForceAddPlayerSimple( udg_MevPlayer, udg_PlayPlayers )
-    else
-    endif
-    if ( Trig_Start_Func004C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        call SetPlayerTechMaxAllowedSwap( 'hbew', 1, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'h00Q', 4, GetOwningPlayer(GetTriggerUnit()) )
-        set udg_KelPlayer = GetOwningPlayer(GetTriggerUnit())
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " играет за Высших эльфов" ) )
-        call SetPlayerName( GetOwningPlayer(GetTriggerUnit()), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " (Высшие эльфы)" ) )
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForceAddPlayerSimple( udg_KelPlayer, udg_PlayPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_KelPlayer), function Trig_Start_Func004Func009002 )
-        call ForGroupBJ( GetUnitsInRectAll(gg_rct_Keli), function Trig_Start_Func004Func010A )
-        call CreateNUnitsAtLoc( 5, 'nhef', udg_KelPlayer, GetRectCenter(gg_rct_Kel_resp), bj_UNIT_FACING )
-        call CreateNUnitsAtLoc( 1, 'Hkal', udg_KelPlayer, GetRectCenter(gg_rct_Kel_resp), bj_UNIT_FACING )
-        set udg_Kel = GetLastCreatedUnit()
-        call PanCameraToTimedLocForPlayer( udg_KelPlayer, GetUnitLoc(gg_unit_h003_0419), 0 )
-    else
-    endif
-    if ( Trig_Start_Func005C() ) then
-        call SetPlayerTechMaxAllowedSwap( 'ntt1', 4, GetOwningPlayer(GetTriggerUnit()) )
-        call ShowUnitHide( GetTriggerUnit() )
-        set udg_DemonPlayer = GetOwningPlayer(GetTriggerUnit())
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " играет за Вторженцов" ) )
-        call SetPlayerName( GetOwningPlayer(GetTriggerUnit()), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " (Вторженцы)" ) )
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_DemonPlayer), function Trig_Start_Func005Func007002 )
-        call ForceAddPlayerSimple( udg_DemonPlayer, udg_PlayPlayers )
-        call SetUnitOwner( gg_unit_ncp3_0317, udg_DemonPlayer, true )
-        call PanCameraToTimedLocForPlayer( udg_DemonPlayer, GetUnitLoc(gg_unit_ncp3_0317), 0 )
-    else
-    endif
-    if ( Trig_Start_Func006C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        call SetPlayerTechMaxAllowedSwap( 'n010', 3, GetOwningPlayer(GetTriggerUnit()) )
-        call SetPlayerTechMaxAllowedSwap( 'n017', 20, GetOwningPlayer(GetTriggerUnit()) )
-        set udg_SatyrPlayer = GetOwningPlayer(GetTriggerUnit())
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " играет за Сатиров" ) )
-        call SetPlayerName( GetOwningPlayer(GetTriggerUnit()), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + " (Сатиры)" ) )
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_SatyrPlayer), function Trig_Start_Func006Func008002 )
-        call ForceAddPlayerSimple( udg_SatyrPlayer, udg_PlayPlayers )
-        call ForGroupBJ( GetUnitsInRectAll(gg_rct_SatyrStart), function Trig_Start_Func006Func010A )
-        set udg_SatyrHero = gg_unit_U000_1860
-        call PanCameraToTimedLocForPlayer( udg_SatyrPlayer, GetUnitLoc(gg_unit_e00H_1859), 0 )
-    else
-    endif
-    if ( Trig_Start_Func007C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        set udg_DiciyPlayer = GetOwningPlayer(GetTriggerUnit())
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call DisplayTextToForce( GetPlayersAll(), ( GetPlayerName(GetOwningPlayer(GetTriggerUnit())) + ": Выбрал Дополнительные рассы" ) )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_DiciyPlayer), function Trig_Start_Func007Func005002 )
-        call ForceAddPlayerSimple( udg_DiciyPlayer, udg_PlayPlayers )
-        call SetUnitOwner( gg_unit_n01B_1300, udg_DiciyPlayer, true )
-        call PanCameraToTimedLocForPlayer( udg_DiciyPlayer, GetUnitLoc(gg_unit_n01B_1300), 0 )
-        call SelectUnitForPlayerSingle( gg_unit_n01B_1300, udg_DiciyPlayer )
-    else
-    endif
-    if ( Trig_Start_Func008C() ) then
-        call ShowUnitHide( GetTriggerUnit() )
-        set udg_KorolGorPlayer = GetOwningPlayer(GetTriggerUnit())
-        call ForceRemovePlayerSimple( GetOwningPlayer(GetTriggerUnit()), udg_PickPlayers )
-        call ForGroupBJ( GetUnitsInRectOfPlayer(GetPlayableMapRect(), udg_KorolGorPlayer), function Trig_Start_Func008Func004002 )
-        call ForceAddPlayerSimple( udg_KorolGorPlayer, udg_PlayPlayers )
-        call ConditionalTriggerExecute( gg_trg_Pick_Gnom )
-    else
-    endif
-endfunction
+            set udg_MevPlayer = GetOwningPlayer(GetTriggerUnit())
 
-//===========================================================================
-function InitTrig_Start takes nothing returns nothing
-    set gg_trg_Start = CreateTrigger(  )
-    call TriggerRegisterEnterRectSimple( gg_trg_Start, gg_rct_Pick_Hero )
-    call TriggerAddAction( gg_trg_Start, function Trig_Start_Actions )
-endfunction
+            call SetPlayerTechMaxAllowed(udg_MevPlayer, 'ensh', 1 )
+            call SetPlayerTechMaxAllowed(udg_MevPlayer, 'e005', 1 )
+            call SetPlayerTechMaxAllowed(udg_MevPlayer, 'ewsp', 15 )
+
+            call DisplayTimedTextToPlayers( GetPlayerName( udg_MevPlayer ) + " играет за Мэв" )
+            call SetPlayerName( udg_MevPlayer, GetPlayerName( udg_MevPlayer ) + " (Мэв)" )
+
+            call ForForce( bj_FORCE_ALL_PLAYERS, function Trig_Start_Func003Func008002 )
+            call ForceRemovePlayer(udg_PickPlayers, udg_MevPlayer)
+            call ForceAddPlayer(udg_PlayPlayers, udg_MevPlayer)
+
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_MevPlayer ), function RemoveUnitCB )
+
+            call GroupClear( tempGroup )
+            call GroupEnumUnitsInRect( tempGroup, gg_rct_NightElf, null )
+            call GroupEnumUnitsInRect( tempGroup, gg_rct_NightElf2, null )
+            call GroupUnitsSetOwner( tempGroup, udg_MevPlayer )
+
+            set udg_Mev = CreateUnit( udg_MevPlayer, 'E004', GetRectCenterX( gg_rct_Drevo ), GetRectCenterY( gg_rct_Drevo ), bj_UNIT_FACING )
+
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_etoe_0735 ), GetUnitY( gg_unit_etoe_0735 ) )
+            call PanCameraToTimedLocForPlayer( udg_MevPlayer, tempLoc, 0 )
+        endif
+
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e003' ) then
+            call ShowUnit( GetTriggerUnit(), false )
+
+            set udg_KelPlayer = GetOwningPlayer(GetTriggerUnit())
+
+            call SetPlayerTechMaxAllowed(udg_KelPlayer, 'hbew', 1 )
+            call SetPlayerTechMaxAllowed(udg_KelPlayer, 'h00Q', 4 )
+
+            call DisplayTimedTextToPlayers( GetPlayerName( udg_KelPlayer ) + " играет за Высших эльфов" )
+            call SetPlayerName( udg_KelPlayer, GetPlayerName( udg_KelPlayer ) + " (Высшие эльфы)" )
+            
+            call ForceRemovePlayer( udg_PickPlayers, udg_KelPlayer )
+            call ForceAddPlayer(udg_PlayPlayers, udg_KelPlayer)
+
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_KelPlayer ), function RemoveUnitCB )
+
+            call GroupClear( tempGroup )
+            call GroupEnumUnitsInRect( tempGroup, gg_rct_Keli, null )
+            call GroupUnitsSetOwner( tempGroup, udg_KelPlayer )
+
+            call CreateNUnits( udg_KelPlayer, 'nhef', 5, GetRectCenterX( gg_rct_Kel_resp ), GetRectCenterY( gg_rct_Kel_resp ), bj_UNIT_FACING )
+
+            set udg_Kel = CreateUnit( udg_KelPlayer, 'Hkal', GetRectCenterX( gg_rct_Kel_resp ), GetRectCenterY( gg_rct_Kel_resp ), bj_UNIT_FACING )
+
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_h003_0419 ), GetUnitY( gg_unit_h003_0419 ) )
+            call PanCameraToTimedLocForPlayer( udg_KelPlayer, tempLoc, 0 )
+        endif
+
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e00D' ) then
+            set udg_DemonPlayer = GetOwningPlayer(GetTriggerUnit())
+
+            call SetPlayerTechMaxAllowed(udg_DemonPlayer, 'ntt1', 4 )
+
+            call ShowUnit( GetTriggerUnit(), false )
+
+            call DisplayTimedTextToPlayers( GetPlayerName( udg_DemonPlayer ) + " играет за Вторженцов" )
+            call SetPlayerName( udg_DemonPlayer, GetPlayerName(udg_DemonPlayer) + " (Вторженцы)" )
+
+            call ForceRemovePlayer(udg_PickPlayers, udg_DemonPlayer)
+            call ForceAddPlayer(udg_PlayPlayers, udg_DemonPlayer)
+
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_DemonPlayer ), function RemoveUnitCB )
+
+            call SetUnitOwner( gg_unit_ncp3_0317, udg_DemonPlayer, true )
+
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_ncp3_0317 ), GetUnitY( gg_unit_ncp3_0317 ) )
+            call PanCameraToTimedLocForPlayer( udg_DemonPlayer, tempLoc, 0 )
+        endif
+
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e00T' ) then
+            call ShowUnit( GetTriggerUnit(), false )
+
+            set udg_SatyrPlayer = GetOwningPlayer(GetTriggerUnit())
+
+            call SetPlayerTechMaxAllowed(udg_SatyrPlayer, 'n010', 3 )
+            call SetPlayerTechMaxAllowed(udg_SatyrPlayer, 'n017', 20 )
+
+            call DisplayTimedTextToPlayers( GetPlayerName( udg_SatyrPlayer ) + " играет за Сатиров" )
+            call SetPlayerName( udg_SatyrPlayer, GetPlayerName( udg_SatyrPlayer ) + " (Сатиры)" )
+            
+            call ForceRemovePlayer( udg_PickPlayers, udg_SatyrPlayer )
+            call ForceAddPlayer(udg_PlayPlayers, udg_SatyrPlayer)
+
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_SatyrPlayer ), function RemoveUnitCB )
+
+            call GroupClear( tempGroup )
+            call GroupEnumUnitsInRect( tempGroup, gg_rct_SatyrStart, null )
+            call GroupUnitsSetOwner( tempGroup, udg_SatyrPlayer )
+
+            set udg_SatyrHero = gg_unit_U000_1860
+
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_e00H_1859 ), GetUnitY( gg_unit_e00H_1859 ) )
+            call PanCameraToTimedLocForPlayer( udg_SatyrPlayer, GetUnitLoc(gg_unit_e00H_1859), 0 )
+        endif
+
+        if ( GetUnitTypeId(GetTriggerUnit()) == 'e00R' ) then
+            call ShowUnit( GetTriggerUnit(), false )
+
+            set udg_DiciyPlayer = GetOwningPlayer(GetTriggerUnit())
+
+            call ForceRemovePlayer(udg_PickPlayers, udg_DiciyPlayer)
+            call ForceAddPlayer(udg_PlayPlayers, udg_DiciyPlayer)
+
+            call DisplayTimedTextToPlayers( GetPlayerName( udg_DiciyPlayer ) + ": Выбрал Дополнительные рассы" )
+
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_DiciyPlayer ), function RemoveUnitCB )
+
+            call SetUnitOwner( gg_unit_n01B_1300, udg_DiciyPlayer, true )
+            call SelectUnitForPlayerSingle( gg_unit_n01B_1300, udg_DiciyPlayer )
+
+            call MoveLocation( tempLoc, GetUnitX( gg_unit_n01B_1300 ), GetUnitY( gg_unit_n01B_1300 ) )
+            call PanCameraToTimedLocForPlayer( udg_DiciyPlayer, tempLoc, 0 )
+        endif
+
+        if (  GetUnitTypeId(GetTriggerUnit()) == 'e00P'  ) then
+            call ShowUnit( GetTriggerUnit(), false )
+
+            set udg_KorolGorPlayer = GetOwningPlayer( GetTriggerUnit( ) )
+
+            call ForceRemovePlayer( udg_PickPlayers, GetOwningPlayer( GetTriggerUnit( ) ) )
+            call ForceAddPlayer( udg_PlayPlayers, udg_KorolGorPlayer )
+
+            call ForGroup( GetUnitsOnMapOfPlayer( udg_KorolGorPlayer ), function RemoveUnitCB )
+
+            call ConditionalTriggerExecute( gg_trg_Pick_Gnom )
+        endif
+    endfunction
+
+    private function onInit takes nothing returns nothing
+    endfunction
+
+endscope
+
+    
+
+
