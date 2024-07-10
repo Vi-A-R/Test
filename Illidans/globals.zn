@@ -17,6 +17,10 @@ library Globals {
         group rGroup;
         player rPlayer;
 
+        unit tUnit;
+        group tGroup;
+        player tPlayer;
+
         group tempGroup;
         location tempLoc;
     }
@@ -24,16 +28,16 @@ library Globals {
     //============================================================================
     // Additional functions
 
-    function CreateNUnits( player whichPlayer, integer unitId, integer count, real x, real y, real face ) -> nothing
+    public function CreateNUnits( player whichPlayer, integer unitId, integer count, real x, real y, real face ) -> nothing
     {
         integer index;
         for (0 <= index < count)
         {
-            CreateUnit( whichPlayer, unitid, x, y, face );
+            CreateUnit( whichPlayer, unitId, x, y, face );
         }
     }
 
-    function GroupUnitsSetOwner( group whichGroup, player newOwner ) -> nothing
+    public function GroupUnitsSetOwner( group whichGroup, player newOwner ) -> nothing
     {
         group g = CreateGroup( );
         unit u;
@@ -51,14 +55,14 @@ library Globals {
         g = null;
     }
 
-    function GetUnitsOnMapOfPlayer( player whichPlayer ) -> group
+    public function GetUnitsOnMapOfPlayer( player whichPlayer ) -> group
     {
         unit u;
         rGroup = CreateGroup( );
 
         GroupClear( tempGroup );
 
-        GroupEnumUnitsInRect( tempGroup, r, null );
+        GroupEnumUnitsInRect( tempGroup, bj_mapInitialPlayableArea, null );
 
         u = FirstOfGroup( tempGroup );
         while( u != null )
@@ -74,7 +78,7 @@ library Globals {
         return rGroup;
     }
 
-    function DisplayTimedTextToPlayers( string message ) -> nothing
+    public function DisplayTimedTextToPlayers( string message ) -> nothing
     {
         integer index;
         for ( 0 <= index < bj_MAX_PLAYERS )

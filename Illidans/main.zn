@@ -1,8 +1,6 @@
 //! import "globals.zn"
 //! import "actions\Zikkyrat.zn"
-
-
-//! import "Illidans\actions\Start.zn"
+//! import "actions\Start.zn"
 
 library Main {
 
